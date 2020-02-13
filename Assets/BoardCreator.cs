@@ -11,6 +11,8 @@ public class BoardCreator : MonoBehaviour
     public float seedChanger = 25;
     public float foiliageSeed = 20;
     public float foiliageSeedChanger = 250;
+    public float caveSeed = 20;
+    public float caveSeedChanger = 25;
 
 
     List<Transform> objects;
@@ -85,6 +87,32 @@ public class BoardCreator : MonoBehaviour
                     GameObject BerryBush = (GameObject)Instantiate(Resources.Load("BerryBush"));
                     BerryBush.transform.position = new Vector2(poX, poY);
                 }
+                if (noise < .3 && objects[co * cols + r].gameObject.name != "WaterTile(Clone)" && objects[co * cols + r].gameObject.name != "SandTile(Clone)" && objects[co * cols + r].gameObject.name != "WaterTile(Clone)" && objects[co * cols + r].gameObject.name != "DirtTile(Clone)")
+                {
+                    GameObject tree = (GameObject)Instantiate(Resources.Load("Tree"));
+                    tree.transform.position = new Vector2(poX, poY + .5f);
+                }
+
+            }
+        }
+    }
+    void GenerateCaves()
+    {
+        for (int r = 0; r < rows; r++)
+        {
+            for (int co = 0; co < cols; co++)
+            {
+                float poX = objects[co * cols + r].gameObject.transform.position.x;
+                float poY = objects[co * cols + r].gameObject.transform.position.y;
+                poX = poX * 1.0000f;
+                poY = poY * 1.0000f;
+                float noise = Mathf.PerlinNoise(poX / caveSeedChanger + caveSeed, poY / caveSeedChanger + caveSeed);
+                if (noise < .3 && objects[co * cols + r].gameObject.name == "DirtTile(Clone)")
+                {
+                    GameObject StoneTile = (GameObject)Instantiate(Resources.Load("StoneTile"));
+                    StoneTile.transform.position = new Vector2(poX, poY);
+                }
+               
 
             }
         }
@@ -145,6 +173,7 @@ public class BoardCreator : MonoBehaviour
         GenerateGrid();
         ChangeTheTiles();
         GenerateFoiliage();
+        GenerateCaves();
 
 
 
