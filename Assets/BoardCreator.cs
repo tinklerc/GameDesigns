@@ -80,7 +80,7 @@ public class BoardCreator : MonoBehaviour
                 poX = poX * 1.0000f;
                 poY = poY * 1.0000f;
                 float noise = Mathf.PerlinNoise(poX / foiliageSeedChanger + foiliageSeed, poY / foiliageSeedChanger + foiliageSeed);
-                if (noise > .7 && objects[co * cols + r].gameObject.name != "WaterTile(Clone)" && objects[co * cols + r].gameObject.name != "SandTile(Clone)")
+                if (noise > .7 && objects[co * cols + r].gameObject.name != "WaterTile(Clone)" && objects[co * cols + r].gameObject.name != "SandTile(Clone)" && objects[co * cols + r].gameObject.name != "WaterTile(Clone)" && objects[co * cols + r].gameObject.name != "DirtTile(Clone)")
                 {
                     GameObject BerryBush = (GameObject)Instantiate(Resources.Load("BerryBush"));
                     BerryBush.transform.position = new Vector2(poX, poY);
