@@ -2,9 +2,4 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class Noise
-{
-
- 
-
-}
+public static class Noise { }
