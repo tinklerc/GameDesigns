@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class BoardCreator : MonoBehaviour
 {
-    public int cols = 100;
+    public int cols = 256;
 
-    public int rows = 100;
+    public int rows = 256;
 
     private int tileSize = 1;
 
@@ -21,69 +21,66 @@ public class BoardCreator : MonoBehaviour
 
     public float caveSeedChanger = 25;
 
+    public struct Point {
+        public int row, col;
+        public Point(int r, int c) {
+            row = r;
+            col = c;
+        }
+    }
+
+    public enum Tile {
+        Sand,
+        Stone,
+        Snow,
+        Dirt,
+        Water,
+        Grass,
+        Berry
+    }
+
+    public Dictionary<Point, GameObject> Grid = new Dictionary<Point, GameObject>();
+    private Dictionary<Tile, GameObject> prefabs = new Dictionary<Tile, GameObject>();
+
     List<Transform> objects;
-
-    void ChangeTileDirt(int i)
-    {
-        Destroy(objects[i].gameObject);
-        GameObject dirtTile =
-            (GameObject) Instantiate(Resources.Load("DirtTile"));
-        dirtTile.transform.position =
-            new Vector2(objects[i].position.x, objects[i].position.y);
-        Destroy(objects[i].gameObject);
-        objects[i] = dirtTile.transform;
-    }
-
-    void ChangeTileWater(int i)
-    {
-        Destroy(objects[i].gameObject);
-        GameObject dirtTile =
-            (GameObject) Instantiate(Resources.Load("WaterTile"));
-        dirtTile.transform.position =
-            new Vector2(objects[i].position.x, objects[i].position.y);
-        Destroy(objects[i].gameObject);
-        objects[i] = dirtTile.transform;
-    }
-
-    void ChangeTileSnow(int i)
-    {
-        Destroy(objects[i].gameObject);
-        GameObject dirtTile =
-            (GameObject) Instantiate(Resources.Load("SnowTile"));
-        dirtTile.transform.position =
-            new Vector2(objects[i].position.x, objects[i].position.y);
-        Destroy(objects[i].gameObject);
-        objects[i] = dirtTile.transform;
-    }
-
-    void ChangeTileSand(int i)
-    {
-        Destroy(objects[i].gameObject);
-        GameObject dirtTile =
-            (GameObject) Instantiate(Resources.Load("SandTile"));
-        dirtTile.transform.position =
-            new Vector2(objects[i].position.x, objects[i].position.y);
-        Destroy(objects[i].gameObject);
-        objects[i] = dirtTile.transform;
-    }
 
     void GenerateGrid()
     {
-        GameObject referenceTile =
-            (GameObject) Instantiate(Resources.Load("FreshGrassTile"));
         for (int row = 0; row < rows; row++)
         {
             for (int col = 0; col < cols; col++)
             {
-                GameObject tile =
-                    (GameObject) Instantiate(referenceTile, transform);
-                float posX = col * tileSize;
-                float posY = row * tileSize;
-                tile.transform.position = new Vector2(posX, posY);
-                objects.Add(tile.transform);
+                var point = new Point(row * tileSize, col * tileSize);
+                Grid[point] = (GameObject) Instantiate(prefabs[GetTileFromPoint(point)], transform);
+                Grid[point].transform.position = new Vector2(point.row, point.col);
             }
         }
-        Destroy (referenceTile);
+    }
+
+    Tile GetTileFromPoint(Point p) {
+        // Convert perlin noise to 0-1 value range
+        float row = (float)p.row / rows;
+        float col = (float)p.col / cols;
+
+        var noise = Mathf.PerlinNoise(row, col);
+        Debug.Log(p.col);
+        Debug.Log(p.row);
+        Debug.Log(noise);
+        if (noise < .2) {
+            return Tile.Water;
+        } 
+        else if (noise < .21){
+            return Tile.Sand;
+        }
+        else if (noise < .5 ) {
+            return Tile.Grass;
+        }
+        else if (noise < .8) {
+            return Tile.Dirt;
+        }
+        else {
+            return Tile.Snow;
+        }
     }
 
     void GenerateFoiliage()
@@ -216,14 +213,32 @@ public class BoardCreator : MonoBehaviour
         }
     }
 
+    void CreateReferenceResources() {
+        prefabs[Tile.Sand] = (GameObject)Instantiate(Resources.Load("SandTile"));
+        prefabs[Tile.Snow] = (GameObject)Instantiate(Resources.Load("SnowTile"));
+        prefabs[Tile.Stone] = (GameObject)Instantiate(Resources.Load("StoneTile"));
+        prefabs[Tile.Water] = (GameObject)Instantiate(Resources.Load("WaterTile"));
+        prefabs[Tile.Dirt] = (GameObject)Instantiate(Resources.Load("DirtTile"));
+        prefabs[Tile.Grass] = (GameObject)Instantiate(Resources.Load("FreshGrassTile"));
+        prefabs[Tile.Berry] = (GameObject)Instantiate(Resources.Load("BerryBush"));
+    }
+
+    void DisableReferenceResources() {
+        foreach(var entry in prefabs)
+        {
+            entry.Value.SetActive(false); 
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        CreateReferenceResources();
         objects = new List<Transform>();
         GenerateGrid();
-        ChangeTheTiles();
-        GenerateFoiliage();
-        GenerateCaves();
+        //ChangeTheTiles();
+        //GenerateFoiliage();
+        DisableReferenceResources();
     }
 
     // Update is called once per frame
