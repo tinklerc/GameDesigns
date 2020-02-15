@@ -150,12 +150,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cd464d926c81584daeb0ee7cbc5dad8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cols: 100
-  rows: 100
+  cols: 256
+  rows: 256
   seed: 1
   seedChanger: 25
   foiliageSeed: 20
-  foiliageSeedChanger: 250
+  foiliageSeedChanger: 2
   caveSeed: 20
   caveSeedChanger: 25
 --- !u!4 &98899120
