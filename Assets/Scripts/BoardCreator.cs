@@ -21,6 +21,8 @@ public class BoardCreator : MonoBehaviour
 
     public float caveSeedChanger = 25;
 
+    public int playerCount;
+
     public struct Point {
         public int row, col;
         public Point(int r, int c) {
@@ -40,32 +42,52 @@ public class BoardCreator : MonoBehaviour
     }
 
     public Dictionary<Point, GameObject> Grid = new Dictionary<Point, GameObject>();
+    public GameObject[][] Grid2 = new GameObject[256][];
+    public GameObject[] Players = new GameObject[10];
     private Dictionary<Tile, GameObject> prefabs = new Dictionary<Tile, GameObject>();
 
     List<Transform> objects;
 
     void GenerateGrid()
     {
+        if (rows > 256){
+            rows = 256;
+        }
+        if (cols > 256){
+            cols = 256;
+        }
+        
         for (int row = 0; row < rows; row++)
         {
+           Grid2[row] = new GameObject[256]; 
             for (int col = 0; col < cols; col++)
             {
                 var point = new Point(row * tileSize, col * tileSize);
-                Grid[point] = (GameObject) Instantiate(prefabs[GetTileFromPoint(point)], transform);
-                Grid[point].transform.position = new Vector2(point.row, point.col);
+                Grid2[row][col] = (GameObject) Instantiate(prefabs[GetTileFromPoint(point)], transform);
+                Grid2[row][col].transform.position = new Vector2(point.row, point.col);
             }
         }
+    }
+    void GeneratePlayers(int p) 
+    {
+                for(int i = 0; i < p; i++){
+                    Players[i]=(GameObject) Instantiate(Resources.Load("Tree"));
+                    Players[i].transform.position = new Vector2(rows/2+i, cols/2+i);
+                }
+
+        
+
     }
 
     Tile GetTileFromPoint(Point p) {
         // Convert perlin noise to 0-1 value range
-        float row = (float)p.row / rows;
-        float col = (float)p.col / cols;
+        float row = (float)p.row / 20;
+        float col = (float)p.col / 20;
 
         var noise = Mathf.PerlinNoise(row, col);
-        Debug.Log(p.col);
-        Debug.Log(p.row);
-        Debug.Log(noise);
+        // Debug.Log(p.col);
+        // Debug.Log(p.row);
+        // Debug.Log(noise);
         if (noise < .2) {
             return Tile.Water;
         } 
@@ -190,23 +212,23 @@ public class BoardCreator : MonoBehaviour
                             Mathf
                                 .PerlinNoise(poX / seedChanger + seed,
                                 poY / seedChanger + seed);
-                        Debug.Log (noise);
-                        if (noise < .2)
-                        {
-                            ChangeTileWater(co * cols + r);
-                        }
-                        if (noise > .2 && noise < .21)
-                        {
-                            ChangeTileSand(co * cols + r);
-                        }
-                        if (noise > .5 && noise < .8)
-                        {
-                            ChangeTileDirt(co * cols + r);
-                        }
-                        if (noise > .8)
-                        {
-                            ChangeTileSnow(co * cols + r);
-                        }
+                        // Debug.Log (noise);
+                        // if (noise < .2)
+                        // {
+                        //     ChangeTileWater(co * cols + r);
+                        // }
+                        // if (noise > .2 && noise < .21)
+                        // {
+                        //     ChangeTileSand(co * cols + r);
+                        // }
+                        // if (noise > .5 && noise < .8)
+                        // {
+                        //     ChangeTileDirt(co * cols + r);
+                        // }
+                        // if (noise > .8)
+                        // {
+                        //     ChangeTileSnow(co * cols + r);
+                        // }
                     }
                 }
             }
@@ -239,6 +261,7 @@ public class BoardCreator : MonoBehaviour
         //ChangeTheTiles();
         //GenerateFoiliage();
         DisableReferenceResources();
+        GeneratePlayers(playerCount);
     }
 
     // Update is called once per frame
