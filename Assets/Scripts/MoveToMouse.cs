@@ -25,12 +25,27 @@ public class MoveToMouse : MonoBehaviour
   }
 
   void onTaskClick() {
-    Debug.Log("ya clicked me!");
+    Debug.Log("ya clicked!");
     this.buttonWasPressed = true;
     this.uiActive = false;
     treeButton.SetActive(this.uiActive);
   }
 
+  void HandleRightClick(){
+    if(!Input.GetMouseButtonDown(1)) {return;}
+    if (this.uiActive){
+      this.uiActive = false;
+      treeButton.SetActive(uiActive);
+      trackedObject = null;
+      Debug.Log("WORKING");
+    }
+
+    
+  }
+
+  void HandleTreeCollision(){
+    
+  }
 
   void HandleLeftClick() {
     if(!Input.GetMouseButtonDown(0)) { return; }
@@ -63,6 +78,8 @@ public class MoveToMouse : MonoBehaviour
   void Update () {
 
     HandleLeftClick();
+    HandleRightClick();
+   
 
 
 

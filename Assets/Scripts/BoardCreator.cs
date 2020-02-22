@@ -3,17 +3,17 @@ using UnityEngine;
 
 public class BoardCreator : MonoBehaviour
 {
-    public int cols = 256;
+    public int cols;
 
-    public int rows = 256;
+    public int rows;
 
     private int tileSize = 1;
 
-    public float seed = 1;
+    public float seed = 20;
 
     public float seedChanger = 25;
 
-    public float foiliageSeed = 20;
+    public float foiliageSeed = 25;
 
     public float foiliageSeedChanger = 250;
 
@@ -37,8 +37,13 @@ public class BoardCreator : MonoBehaviour
         Snow,
         Dirt,
         Water,
+        WaterShallow,
         Grass,
-        Berry
+        DirtTransition,
+        Berry,
+        Barrier,
+        PineTree
+    
     }
 
     public Dictionary<Point, GameObject> Grid = new Dictionary<Point, GameObject>();
@@ -81,23 +86,49 @@ public class BoardCreator : MonoBehaviour
 
     Tile GetTileFromPoint(Point p) {
         // Convert perlin noise to 0-1 value range
-        float row = (float)p.row / 20;
-        float col = (float)p.col / 20;
+        float row = (float)p.row;
+        float col = (float)p.col;
+        float rowNoise = row / 20;
+        float colNoise = col / 20;
 
-        var noise = Mathf.PerlinNoise(row, col);
+        var noise = Mathf.PerlinNoise(rowNoise, colNoise);
         // Debug.Log(p.col);
         // Debug.Log(p.row);
         // Debug.Log(noise);
-        if (noise < .2) {
+        if (row == 0){
+            return Tile.Barrier;
+        }
+        if (col == 0){
+            return Tile.Barrier;
+        }
+        if(col == cols-1){
+            
+            return Tile.Barrier;
+                
+        }
+        
+        if (row == rows-1){
+            return Tile.Barrier;
+        }
+
+        
+        else if (noise < .10) {
             return Tile.Water;
         } 
-        else if (noise < .21){
+        else if (noise < .15) {
+            return Tile.WaterShallow;
+        } 
+        else if (noise < .20){
             return Tile.Sand;
         }
-        else if (noise < .5 ) {
+        else if (noise < .7 ) {
             return Tile.Grass;
         }
-        else if (noise < .8) {
+        // else if (noise < .53){  
+        //     return Tile.DirtTransition;
+
+        // }
+        else if (noise < .9) {
             return Tile.Dirt;
         }
         else {
@@ -107,52 +138,44 @@ public class BoardCreator : MonoBehaviour
 
     void GenerateFoiliage()
     {
-        for (int r = 0; r < rows; r++)
+         if (rows > 256){
+            rows = 256;
+        }
+        if (cols > 256){
+            cols = 256;
+        }
+        for (int r = 1; r < rows-1; r++)
         {
-            for (int co = 0; co < cols; co++)
+            for (int co = cols-1; co > 1; co--)
             {
-                float poX =
-                    objects[co * cols + r].gameObject.transform.position.x;
-                float poY =
-                    objects[co * cols + r].gameObject.transform.position.y;
-                poX = poX * 1.0000f;
-                poY = poY * 1.0000f;
+                float fRow = r;
+                float fCol = co;
+                
                 float noise =
                     Mathf
-                        .PerlinNoise(poX / foiliageSeedChanger + foiliageSeed,
-                        poY / foiliageSeedChanger + foiliageSeed);
-                if (
-                    noise > .7 &&
-                    objects[co * cols + r].gameObject.name !=
-                    "WaterTile(Clone)" &&
-                    objects[co * cols + r].gameObject.name !=
-                    "SandTile(Clone)" &&
-                    objects[co * cols + r].gameObject.name !=
-                    "WaterTile(Clone)" &&
-                    objects[co * cols + r].gameObject.name != "DirtTile(Clone)"
-                )
+                        .PerlinNoise(fRow/foiliageSeed, fCol/foiliageSeed);
+                if (noise > .8 )
+               
                 {
+                    if(Grid2[r][co].gameObject.name != "WaterTile(Clone)(Clone)" && Grid2[r][co].gameObject.name != "SnowTile(Clone)(Clone)" && Grid2[r][co].gameObject.name !="WaterTileLightPixelTest(Clone)(Clone)" && Grid2[r][co].gameObject.name != "SandTile(Clone)(Clone)"){
                     GameObject BerryBush =
                         (GameObject) Instantiate(Resources.Load("BerryBush"));
-                    BerryBush.transform.position = new Vector2(poX, poY);
+                    BerryBush.transform.position = Grid2[r][co].transform.position;
+                     }
                 }
-                if (
-                    noise < .3 &&
-                    objects[co * cols + r].gameObject.name !=
-                    "WaterTile(Clone)" &&
-                    objects[co * cols + r].gameObject.name !=
-                    "SandTile(Clone)" &&
-                    objects[co * cols + r].gameObject.name !=
-                    "WaterTile(Clone)" &&
-                    objects[co * cols + r].gameObject.name != "DirtTile(Clone)"
-                )
-                {
-                    GameObject tree =
-                        (GameObject) Instantiate(Resources.Load("Tree"));
-                    tree.transform.position = new Vector2(poX, poY + .5f);
+                if (noise > .2 && noise < .3){
+                    if(Grid2[r][co].gameObject.name != "WaterTile(Clone)(Clone)" && Grid2[r][co].gameObject.name != "SnowTile(Clone)(Clone)" && Grid2[r][co].gameObject.name !="WaterTileLightPixelTest(Clone)(Clone)"  && Grid2[r][co].gameObject.name != "SandTile(Clone)(Clone)"){
+                    GameObject PineTree =
+                        (GameObject) Instantiate(Resources.Load("PineTree"));
+                    PineTree.transform.position = Grid2[r][co].transform.position;
+                     }
                 }
             }
         }
+    }
+    void changeTransitionTiles(){
+        
+
     }
 
     void GenerateCaves()
@@ -243,6 +266,10 @@ public class BoardCreator : MonoBehaviour
         prefabs[Tile.Dirt] = (GameObject)Instantiate(Resources.Load("DirtTile"));
         prefabs[Tile.Grass] = (GameObject)Instantiate(Resources.Load("FreshGrassTile"));
         prefabs[Tile.Berry] = (GameObject)Instantiate(Resources.Load("BerryBush"));
+        prefabs[Tile.Barrier] = (GameObject)Instantiate(Resources.Load("Barrier"));
+        prefabs[Tile.PineTree] = (GameObject)Instantiate(Resources.Load("PineTree"));
+        prefabs[Tile.DirtTransition] = (GameObject)Instantiate(Resources.Load("DirtTileTurningGrassFirst"));
+        prefabs[Tile.WaterShallow] = (GameObject)Instantiate(Resources.Load("WaterTileLightPixelTest"));
     }
 
     void DisableReferenceResources() {
@@ -262,6 +289,8 @@ public class BoardCreator : MonoBehaviour
         //GenerateFoiliage();
         DisableReferenceResources();
         GeneratePlayers(playerCount);
+        GenerateFoiliage();
+        changeTransitionTiles();
     }
 
     // Update is called once per frame

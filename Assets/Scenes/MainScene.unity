@@ -152,9 +152,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cols: 100
   rows: 100
-  seed: 1
+  seed: 20
   seedChanger: 25
-  foiliageSeed: 20
+  foiliageSeed: 5
   foiliageSeedChanger: 250
   caveSeed: 20
   caveSeedChanger: 25
@@ -589,7 +589,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   taskButton: {fileID: 201477572}
   treeButton: {fileID: 201477570}
-  speed: 5
+  speed: 20
 --- !u!1 &2025958262
 GameObject:
   m_ObjectHideFlags: 0
