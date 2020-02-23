@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4971508897034359314}
   - component: {fileID: 1707001386844898084}
+  - component: {fileID: -4666689780693150683}
   m_Layer: 0
   m_Name: DirtTile
   m_TagString: Untagged
@@ -81,3 +82,15 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-4666689780693150683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7314941510042190495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f080a7a79714ac1091b2de111b8d3e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

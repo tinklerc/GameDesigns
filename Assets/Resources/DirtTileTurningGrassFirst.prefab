@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1949331221485177645}
   - component: {fileID: 7182151638292097733}
   - component: {fileID: 6351928898511270170}
+  - component: {fileID: -613835092963482826}
   m_Layer: 0
   m_Name: DirtTileTurningGrassFirst
   m_TagString: Untagged
@@ -101,3 +102,15 @@ MonoBehaviour:
   Bottom: {fileID: 21300000, guid: ce3580395616a9f4ea95806af6790f92, type: 3}
   BottomRight: {fileID: 21300000, guid: 907a7258ee665df4391795e3587c368a, type: 3}
   TopRight: {fileID: 21300000, guid: 5076d76a38eff1f4fbdbefba0f5e5d2b, type: 3}
+--- !u!114 &-613835092963482826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4248300456291434949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f080a7a79714ac1091b2de111b8d3e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
