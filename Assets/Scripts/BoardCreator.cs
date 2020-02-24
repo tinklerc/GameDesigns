@@ -22,13 +22,6 @@ public class BoardCreator : MonoBehaviour
 
     void GenerateGrid()
     {
-        if (rows > GridSize){
-            rows = GridSize;
-        }
-        if (cols > GridSize){
-            cols = GridSize;
-        }
-        
         for (int row = 0; row < rows; row++)
         {
             Grid[row] = new GameObject[GridSize]; 
@@ -53,7 +46,7 @@ public class BoardCreator : MonoBehaviour
     void GeneratePlayers(int p) 
     {
         for(int i = 0; i < p; i++){
-            Players[i]=(GameObject) Instantiate(Resources.Load("Tree"));
+            Players[i]=(GameObject) Instantiate(Resources.Load("Player"));
             Players[i].transform.position = new Vector2(rows/2+i, cols/2+i);
         }
     }
@@ -88,10 +81,6 @@ public class BoardCreator : MonoBehaviour
         else if (noise < .7 ) {
             return TileType.Grass;
         }
-        // else if (noise < .53){  
-        //     return Tile.DirtTransition;
-
-        // }
         else if (noise < .9) {
             return TileType.Dirt;
         }
@@ -102,37 +91,23 @@ public class BoardCreator : MonoBehaviour
 
     void GenerateFoiliage()
     {
-         if (rows > GridSize){
-            rows = GridSize;
-        }
-        if (cols > GridSize){
-            cols = GridSize;
-        }
-        for (int r = 1; r < rows-1; r++)
+        for (int r = rows-1; r > 0; r--)
         {
-            for (int co = cols-1; co > 1; co--)
+            for (int c = cols-1; c > 0; c--)
             {
-                float fRow = r;
-                float fCol = co;
-                
-                float noise =
-                    Mathf
-                        .PerlinNoise(fRow/foiliageSeed, fCol/foiliageSeed);
-                if (noise > .8 )
-               
+                var noise = Mathf.PerlinNoise((float)r/foiliageSeed, (float)c/foiliageSeed);
+                var tile = Grid[r][c].GetComponent<Tile>();
+                if(tile.AllowsPlants())
                 {
-                    if(Grid[r][co].gameObject.name != "WaterTile(Clone)(Clone)" && Grid[r][co].gameObject.name != "SnowTile(Clone)(Clone)" && Grid[r][co].gameObject.name !="WaterTileLightPixelTest(Clone)(Clone)" && Grid[r][co].gameObject.name != "SandTile(Clone)(Clone)"){
-                    GameObject BerryBush =
-                        (GameObject) Instantiate(Resources.Load("BerryBush"));
-                    BerryBush.transform.position = Grid[r][co].transform.position;
-                     }
-                }
-                if (noise > .2 && noise < .3){
-                    if(Grid[r][co].gameObject.name != "WaterTile(Clone)(Clone)" && Grid[r][co].gameObject.name != "SnowTile(Clone)(Clone)" && Grid[r][co].gameObject.name !="WaterTileLightPixelTest(Clone)(Clone)"  && Grid[r][co].gameObject.name != "SandTile(Clone)(Clone)"){
-                    GameObject PineTree =
-                        (GameObject) Instantiate(Resources.Load("PineTree"));
-                    PineTree.transform.position = Grid[r][co].transform.position;
-                     }
+                    if (noise > .8 )
+                    {
+                        var BerryBush = (GameObject)Instantiate(Resources.Load("BerryBush"));
+                        BerryBush.transform.position = Grid[r][c].transform.position;
+                    }
+                    if (noise > .2 && noise < .3){
+                        var PineTree = (GameObject) Instantiate(Resources.Load("PineTree"));
+                        PineTree.transform.position = Grid[r][c].transform.position;
+                    }
                 }
             }
         }

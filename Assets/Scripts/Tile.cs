@@ -22,12 +22,6 @@ public class Tile : MonoBehaviour
     public int Row, Col;
     public TileType Type;
 
-    public void init(int row, int col, BoardCreator bc) {
-        this.Row = row;
-        this.Col = col;
-        this.boardCreator = bc;
-    }
-
     enum Adj {
         Left,
         TopLeft,
@@ -113,6 +107,15 @@ public class Tile : MonoBehaviour
         else {
             return null;
         }
+    }
+
+    public bool AllowsPlants() {
+        return (
+            Type != TileType.Water &&
+            Type != TileType.Snow &&
+            Type != TileType.WaterShallow &&
+            Type != TileType.Sand
+        );
     }
 
     /**
